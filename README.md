@@ -11,6 +11,8 @@ STEPS :
 
 * Gson is the library used to parse the tweets and pretty print them to understand the entities
 
-* TODO : create a graphdb for the tweets 
+* Ability to parse tweets and create vertices and edges using titan core and blueprints API
+
+* TODO : run sample queries using gremlin 
 
 * TODO : currently using storm-jms for messaging and apache cassandra, Pavan had suggested storm-kafka and datastax cassandra instead.
