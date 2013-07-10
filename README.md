@@ -13,6 +13,10 @@ STEPS :
 
 * Ability to parse tweets and create vertices and edges using titan core and blueprints API
 
-* TODO : run sample queries using gremlin 
+* sample queries working in gremlin :
+  g.V.identifier
+  g.V.map
+  g.E.identifier
+  g.E.map
 
 * TODO : currently using storm-jms for messaging and apache cassandra, Pavan had suggested storm-kafka and datastax cassandra instead.

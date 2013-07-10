@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.yaml.snakeyaml.Yaml;
 
 public class ConfigLoader {

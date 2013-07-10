@@ -1,5 +1,4 @@
 package tweets.analyze;
-
 import java.util.Date;
 
 public final class TweetToReTweetOfEdge extends BaseEdge {

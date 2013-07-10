@@ -1,6 +1,5 @@
 package tweets.analyze;
 
-
 import java.util.Map;
 
 public abstract class BaseBean {
