@@ -21,8 +21,8 @@ import com.google.gson.JsonObject;
 public class TweetParser {
 	private Gson gson_;
 	
-	public void TweetInjector() {
-		gson_= new GsonBuilder().setPrettyPrinting().create();
+	public TweetParser() {
+		gson_ = new GsonBuilder().setPrettyPrinting().create();
 	}
 	
 	private int parseTweets(JsonArray tweets, 
@@ -113,7 +113,7 @@ public class TweetParser {
 		return null;
 	}
 	
-	String parseFileToJson(String filename) {
+	public String parseFileToJson(String filename) {
 		try {
 			BufferedReader reader = new BufferedReader(new 
 					FileReader(new File(filename)));
@@ -122,7 +122,7 @@ public class TweetParser {
 			while((text = reader.readLine()) !=null) {
 				json.append(text);
 			}
-	
+			System.out.println("Got json="+json.toString());
 			return json.toString();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -164,7 +164,8 @@ public class TweetParser {
 			System.out.println(" Number of tweets =" + numTweets);
 			System.out.println(" Number of vertices =" + vertices.size());
 			System.out.println(" Number of edges ="+ edges.size());
-			
+			System.out.println(" Vertices="+vertices);
+			System.out.println(" Edges="+edges);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -38,5 +38,5 @@ public final class UserToTweetEdge extends BaseEdge {
 	public String getToVertexId() {
 		return tweetId_;
 	}
-
+	
 }

@@ -80,7 +80,8 @@ public final class TweetBean extends BaseBean {
 	  return creation_time_;
   }
   
-  public String toString() {
+  @Override
+  public String toDetailedString() {
 	  StringBuilder sb = new StringBuilder();
 	  sb.append("id=")
 	    .append(id_)
@@ -145,6 +146,8 @@ public <T> T getProperty(String propertyName) {
 		return (T) userMentions_;
 	} else if (propertyName.equalsIgnoreCase(TYPE)) {
 		return (T) TWEET;
+	} else if (propertyName.equalsIgnoreCase(CREATION_TIME)) {
+		return (T) creation_time_;
 	} else {
 		throw new UnsupportedOperationException("Property="+propertyName+" not supported");
 	}

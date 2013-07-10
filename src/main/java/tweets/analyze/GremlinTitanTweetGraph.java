@@ -3,11 +3,10 @@ package tweets.analyze;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
@@ -24,26 +23,56 @@ public class GremlinTitanTweetGraph {
 		graph_ = TitanFactory.open((String) titandbConfig.get(TITAN_DB_PROPERTIES_FILE));
 	}
 	
-    public GremlinTitanTweetGraph(List<String> keyIndices) {
+    public GremlinTitanTweetGraph(List<String> keyIndices, boolean restart) {
 	   init();
-	   keyIndices_ = keyIndices;
-	   for (String keyIndex : keyIndices) {
-		   graph_.createKeyIndex(keyIndex, Vertex.class);
+	   keyIndices_ = new ArrayList();
+	   Set<String> preExistingKeyIndices = graph_.getIndexedKeys(Vertex.class);
+	   
+	   if (restart) {
+           for (String keyIndex : preExistingKeyIndices) {
+        	     graph_.dropKeyIndex(keyIndex, Vertex.class);
+           }
 	   }
-    }
+	   
+	   for (String keyIndex : keyIndices) {
+		 if (!preExistingKeyIndices.contains(keyIndex)) {
+		   graph_.createKeyIndex(keyIndex, Vertex.class);
+		   keyIndices_.add(keyIndex);
+	     }
+	   }
+	   
+	   System.out.println("Current set of KEY indices on vertex="+keyIndices_);
+	  }
     
-    
-    public void addVertex(Collection<BaseBean> beans) {
+    public void addVertex(Collection<BaseBean> beans, boolean restart) {
+    	    if (restart) {
+    	    	   for(Vertex v : graph_.getVertices()) {
+    	    		   graph_.removeVertex(v);
+    	    	   }
+    	    }
+    	    
     	    for (BaseBean bean : beans) {
     	    	  Vertex b = graph_.addVertex(null);
     	    	  Map<String, Object> properties = bean.getProperties();
-    	    	     for (Entry<String, Object> entry : properties.entrySet()) {
-    	    	    	    b.setProperty(entry.getKey(), entry.getValue());
+    	    	  for (Entry<String, Object> entry : properties.entrySet()) {
+    	    	    	b.setProperty(entry.getKey(), entry.getValue());
     	    	  }
+    	    }
+    	    
+    	    int counter = 0;
+    	    for (Vertex v : graph_.getVertices()) {
+    	    	   System.out.println("Added " + counter +" Vertex with id="+v.getProperty(BaseBean.ID));
+    	    	   counter++;
     	    }
     }
     
-    public void addEdge(String keyIndex, Collection <BaseEdge> edges) {
+    public void addEdge(String keyIndex, Collection <BaseEdge> edges, boolean restart) {
+    	   if (restart) {
+	    	   for(Edge e : graph_.getEdges()) {
+	    		   graph_.removeEdge(e);
+	    	   }
+	   }
+    	
     	   for (String key : keyIndices_) {
     		   if (key.equalsIgnoreCase(keyIndex)) {
     	         for (BaseEdge edge : edges) {
@@ -64,6 +93,12 @@ public class GremlinTitanTweetGraph {
     			   		"cannot search for vertices");
     		   }
     	   }
+    	   
+    	   int counter = 0;
+    	   for (Edge e : graph_.getEdges()) {
+    		   System.out.println("Added " + counter +" Edge with id="+ e.getProperty(BaseEdge.ID));
+	    	   counter++;
+    	   }
     }
     
    public static void main(String[] args) throws IOException {
@@ -78,9 +113,12 @@ public class GremlinTitanTweetGraph {
 		
 		List<String> keyIndices = new ArrayList();
 		keyIndices.add(BaseBean.ID);
-		GremlinTitanTweetGraph graph = new GremlinTitanTweetGraph(keyIndices);
-		graph.addVertex(vertices);
-	    graph.addEdge(BaseBean.ID, edges);
+		
+		GremlinTitanTweetGraph graph = new GremlinTitanTweetGraph(keyIndices, true);
+		graph.addVertex(vertices, true);
+	    graph.addEdge(BaseBean.ID, edges, true);
+		
+		graph.graph_.commit();
 }
 
 

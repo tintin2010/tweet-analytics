@@ -50,7 +50,8 @@ public final class UserBean extends BaseBean {
 	  setProperty(NUM_FRIENDS, friends);
   }
   
-  public String toString() {
+  @Override
+  public String toDetailedString() {
 	  StringBuilder sb = new StringBuilder();
 	  sb.append("name=")
 	    .append(name_)

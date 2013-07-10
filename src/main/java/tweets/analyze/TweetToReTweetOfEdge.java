@@ -37,5 +37,4 @@ public final class TweetToReTweetOfEdge extends BaseEdge {
 	public String getToVertexId() {
 		return reTweetOfId_;
 	}
-
 }
